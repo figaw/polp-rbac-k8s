@@ -86,3 +86,9 @@ EOF
         path: /var/log/kubernetes/audit/
         type: DirectoryOrCreate
     ```
+
+## Reading the Logs
+
+If you've successfully edited the manifests,
+the api-server should restart and inside the minikube-container
+you can find the logs on the `/var/log/kubernetes/audit/`-path.
