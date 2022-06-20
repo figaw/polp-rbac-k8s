@@ -1,5 +1,8 @@
 # Minikube Examples
 
-## Starting a Cluster
+## Interacting with Minikube
 
+```
 minikube start
+minikube stop
+```
