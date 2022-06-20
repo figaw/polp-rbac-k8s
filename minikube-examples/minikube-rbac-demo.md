@@ -101,8 +101,8 @@ $ kubectl get csr nicolaj -o jsonpath='{.status.certificate}'| base64 -d > nicol
 ## Create a Role for the User
 
 ```shell
-$ kubectl create role developer --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods
-$ kubectl create rolebinding developer-binding-nicolaj --role=developer --user=nicolaj
+$ kubectl create role frontend-developer --verb=get --verb=list --resource=pods
+$ kubectl create rolebinding developer-binding-nicolaj --role=frontend-developer --user=nicolaj
 ```
 
 We can verify that `user:nicolaj` can `get pods` by using impersonation,
