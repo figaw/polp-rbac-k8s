@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: be-database
+spec: {}
+status: {}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: be-application
+spec: {}
+status: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: be-application
+  namespace: be-application
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: be-application
+  namespace: be-application
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: be-application
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: be-application
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: be-database
+  namespace: be-database
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: be-database
+  namespace: be-database
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: be-database
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: be-database
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: be-developer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: be-developer-impersonator
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: backend-developer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: be-developer-impersonator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - users
+  verbs:
+  - impersonate
+  resourceNames:
+  - be-database
+  - be-application
