@@ -6,7 +6,7 @@ A user with a group/organization attached called `backend-developer`.
 (See: [minikube-rbac-demo.md](minikube-rbac-demo.md).)
 
 Otherwise the `group` should be updated in the `ClusterRoleBinding` called
-`be-developer-bindings` in `resources/polp-rbac.yaml`.
+`be-developer` in `resources/polp-rbac.yaml`.
 
 ## Applying the Manifests
 
