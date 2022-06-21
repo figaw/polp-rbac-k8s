@@ -87,6 +87,12 @@ EOF
         type: DirectoryOrCreate
     ```
 
+The file `resources/minikube-kube-api-server.yaml` shows an example
+with the above configuration.
+
+> NB: please be aware that the ip's and other information
+>  might be different, so don't just use it blindly.
+
 ## Reading the Logs
 
 If you've successfully edited the manifests,
