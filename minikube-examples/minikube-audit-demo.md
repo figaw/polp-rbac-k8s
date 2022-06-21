@@ -93,8 +93,19 @@ with the above configuration.
 > NB: please be aware that the ip's and other information
 >  might be different, so don't just use it blindly.
 
+## Making a request
+
+As a user impersonating, make a request, e.g. using the previous example
+
+```
+$ kubectl get pods -n=be-application --as=be-application
+```
+
 ## Reading the Logs
 
 If you've successfully edited the manifests,
 the api-server should restart and inside the minikube-container
 you can find the logs on the `/var/log/kubernetes/audit/`-path.
+
+Look for somewhere that includes `be-application`,
+you can use `cat /var/log/kubernetes/audit/audit-log | grep "be-application"` to search for it.
