@@ -16,7 +16,7 @@ Set your username as the `CN` and the groups you belong to as the
 `O` (organization attribute) of the CSR.
 
 > NB: In the example below, I'm using the username `nicolaj` and
-> the organization `frontend-developer`.
+> the organization `backend-developer`.
 
 Verify the information using,
 
@@ -26,7 +26,7 @@ verify OK
 Certificate Request:
     Data:
         Version: 1 (0x0)
-        Subject: O = frontend-developer, CN = nicolaj
+        Subject: O = backend-developer, CN = nicolaj
         Subject Public Key Info:
             Public Key Algorithm: rsaEncryption
                 RSA Public-Key: (2048 bit)
@@ -47,7 +47,8 @@ kind: CertificateSigningRequest
 metadata:
   name: nicolaj
 spec:
-  request: <base64>
+  request: |
+    <base64>
   signerName: kubernetes.io/kube-apiserver-client
   expirationSeconds: 86400  # one day
   usages:
@@ -65,7 +66,7 @@ $ kubectl get certificatesigningrequests
 NAME      AGE   SIGNERNAME                            REQUESTOR       REQUESTEDDURATION   CONDITION
 nicolaj   6s    kubernetes.io/kube-apiserver-client   minikube-user   24h                 Pending
 
-$ kubectl describe csr      # shortname for certificatesigningrequests
+$ kubectl describe csr nicolaj      # shortname for certificatesigningrequests
 Name:         myuser
 Labels:       <none>
 Annotations:  kubectl.kubernetes.io/last-applied-configuration={...}
@@ -78,7 +79,7 @@ Status:              Pending
 Subject:
          Common Name:    nicolaj
          Serial Number:
-         Organization:   frontend-developer
+         Organization:   backend-developer
 Events:  <none>
 
 $ kubectl certificate approve nicolaj
@@ -101,8 +102,8 @@ $ kubectl get csr nicolaj -o jsonpath='{.status.certificate}'| base64 -d > nicol
 ## Create a Role for the User
 
 ```shell
-$ kubectl create role frontend-developer --verb=get --verb=list --resource=pods
-$ kubectl create rolebinding developer-binding-nicolaj --role=frontend-developer --user=nicolaj
+$ kubectl create role backend-developer --verb=get --verb=list --resource=pods
+$ kubectl create rolebinding developer-binding-nicolaj --role=backend-developer --user=nicolaj
 ```
 
 We can verify that `user:nicolaj` can `get pods` by using impersonation,
@@ -131,7 +132,7 @@ Error from server (Forbidden): nodes is forbidden: User "nicolaj" cannot list re
 ## Using groups instead of users
 
 By switching back to our cluster-admin minikube context,
-    we can edit the `rolebinding` and map it to the `group: frontend-developer`
+    we can edit the `rolebinding` and map it to the `group: backend-developer`
     instead of the `user: nicolaj`, and see that it still works,
 
 ```shell
@@ -149,14 +150,14 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: frontend-developer
+  name: backend-developer
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
 +   name: nicolajX
 + - apiGroup: rbac.authorization.k8s.io
 +   kind: Group
-+   name: frontend-developer
++   name: backend-developer
 ```
 
 Now verify with impersonation that the change was successful:
@@ -174,7 +175,7 @@ Error from server (Forbidden): pods is forbidden: User "nicolaj" cannot list res
 $ kubectl get pods --as=nicolajX
 No resources found in default namespace.
 
-# as "any-user" in group "frontend-developer", it works
-$ kubectl get pods --as=some-user --as-group=frontend-developer
+# as "any-user" in group "backend-developer", it works
+$ kubectl get pods --as=some-user --as-group=backend-developer
 No resources found in default namespace.
 ```
